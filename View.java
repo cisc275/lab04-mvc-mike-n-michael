@@ -24,22 +24,24 @@ public class View extends JPanel{
     int imgHeight = 165;
 	int picNum = 0;
 	int frameCount =10;
-	Map<Direction, BufferedImage> imgs = new HashMap<Direction, BufferedImage>();
+	Map<Direction, BufferedImage> imgs;
 	BufferedImage currImg;
 	JFrame frame = new JFrame();
-	int xloc;
-	int yloc;
+	int xloc =0;
+	int yloc =0;
 	
 	public void update(int x, int y, Direction direct) {
 		if(!imgs.containsKey(direct)){
 			imgs.put(direct, createImage("orc_animation/orc_forward_" +direct+".png"));
 		}
+		
 		currImg = imgs.get(direct);
 		picNum = (picNum + 1) % frameCount;
 		xloc = x;
 		yloc= y;
+		
 		try {
-			Thread.sleep(100);//increase/decrease "speed"
+			Thread.sleep(10);//increase/decrease "speed"
     	} catch (InterruptedException e) {
     		e.printStackTrace();
     	}
@@ -48,10 +50,16 @@ public class View extends JPanel{
 	}
 	public void paint(Graphics g){
 		g.drawImage(currImg.getSubimage(imgWidth*picNum, 0, imgWidth, imgHeight), xloc, yloc, Color.gray, this);
-	}//cuts the Image to the proper frame of animation every update. But does not repeated create images as they're stored in a hashmap
+	}//cuts the Image to the proper frame of animation every update. 
+	//But does not repeated create images as they're stored in a hashmap
 	
 	
 	View(){
+		//initializing to some state (north), to avoid null pointer exceptions yo
+		imgs = new HashMap<Direction, BufferedImage>();
+		imgs.put(Direction.NORTH,createImage("orc_animation/orc_forward_" +Direction.NORTH+".png"));
+		currImg = imgs.get(Direction.NORTH);
+		
     	frame.getContentPane().add(this);
     	frame.setBackground(Color.gray);
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
